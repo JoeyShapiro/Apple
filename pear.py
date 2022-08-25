@@ -138,9 +138,45 @@ class LagrangePoly: # attempt #2
 class Something:
     pass
 
+class SomethingElse:
+    def __init__(self) -> None:
+        pass
+
+    def createItemRandom(self): # TODO create BASE Class
+        return { stat : rng.randint(0, 2) for stat in STATS }
+
+    def createItem(self, np_base_stats):
+        
+        return dict(zip(STATS, np_base_stats))
+
+    def createItems(self):
+        if len(player_choices) == 0:
+            return [ self.createItemRandom(), self.createItemRandom(), self.createItemRandom() ]
+
+        df_choices = pd.DataFrame(player_choices)
+        np_Δ = np.array( [ self.getColΔ(df_choices[stat].to_list()) for stat in STATS ] ) # np i guess
+        np_𝚫_softmax = np.floor(softmax(np_𝚫)*POINTS).astype(int) # TODO make this fit in the amount of points
+        print("np delta pointsmax:", np_Δ_softmax)
+
+        np_lastchoice = np.array(list(player_choices[-1].items()))[:,1].astype(int) # get all of the second column
+        print("np last choice:", np_lastchoice)
+        np_new = np.add(np_Δ_softmax, np_lastchoice)
+
+        return [ self.createItem(np_new), self.createItem(np_new), self.createItem(np_new) ]
+
+    def getCol𝚫(self, col): # should return the number, otherwise confusing and to much work
+        if len(player_choices) < 2:
+            print(f'{bcolors.WARNING}Warning: These values are random{bcolors.ENDC}')
+            return rng.randint(-1, 1)
+        new = col[-1] # last item's col number
+        old = col[-2] # second to last ''
+        distance = 1
+        𝚫 = (new - old) / distance # just the last, right
+        return 𝚫 # what if 0.2, should it be 0 or 1, 0. needs to not round, so it can add numbers
+
 while True:
     to_spend = POINTS
-    algorithm = LagrangePoly()
+    algorithm = SomethingElse()
     choices = algorithm.createItems()
     # choices.append('pass')
     for i, c in enumerate(choices):
